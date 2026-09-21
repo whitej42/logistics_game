@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://cl6pbbcc5nppw"]
+
+[ext_resource type="Script" uid="uid://dvq7a47onbx18" path="res://main.gd" id="1_ig7tw"]
+
+[node name="Main" type="Node2D" unique_id=1844767244]
+script = ExtResource("1_ig7tw")
+
+[node name="UILabel" type="Label" parent="." unique_id=655992589]
+offset_left = -220.0
+offset_top = -238.0
+offset_right = -128.0
+offset_bottom = -215.0
+text = "Placeholder"
+
+[node name="StatusLabel" type="Label" parent="." unique_id=1760843319]
+offset_left = -150.0
+offset_top = -83.0
+offset_right = -57.0
+offset_bottom = -60.0
+text = "Unloading..."
+
+[node name="Pickup" type="ColorRect" parent="." unique_id=1608785525]
+offset_left = -126.0
+offset_top = -46.0
+offset_right = -86.0
+offset_bottom = -6.0
+color = Color(1, 0, 0.016666412, 1)
+
+[node name="Depot" type="ColorRect" parent="." unique_id=576253376]
+offset_left = -20.0
+offset_top = -183.0
+offset_right = 20.0
+offset_bottom = -143.0
+color = Color(0, 0.3666668, 1, 1)
+
+[node name="Vehicle" type="ColorRect" parent="." unique_id=1225161099]
+offset_left = 99.0
+offset_top = -44.0
+offset_right = 139.0
+offset_bottom = -4.0
+color = Color(0.98333335, 1, 0, 1)
