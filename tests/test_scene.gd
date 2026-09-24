@@ -1,25 +1,24 @@
 extends Node2D
 
-const POS_DEPOT: Vector2 = Vector2(800, 350)
-const POS_COLLECTION: Vector2 = Vector2(200, 350)
-const POS_DELIVERY: Vector2 = Vector2(400, 350)
-
-@onready var col_node: ColorRect = $Collection
-@onready var del_node: ColorRect = $Delivery
-
-@onready var depot_node: Sprite2D = $DepotSprite
-@onready var truck_node: Sprite2D = $TruckSprite
-@onready var pallet_node: Sprite2D = $PalletSprite
-@onready var milk_node: Sprite2D = $PalletSprite/MilkSprite
-
-var is_moving: bool = false
-
 func _ready() -> void:
 	var w := TestWorld.create()
 	assert(w.job.validate().is_empty(), "job invalid: %s" % [w.job.validate()])
 
 	# Day 1: collect everything, deliver to B. Pallet 2 comes home to the depot.
 	var route_1 := w.make_route("RT_101", 1, [w.collection, w.delivery_b])
+	assert(route_1.arrival_hours.size() == 2 and route_1.departure_hours.size() == 2, "timetable should have one entry per card")
+	for i in range(route_1.action_cards.size()):
+		var service_start := maxf(route_1.arrival_hours[i], route_1.action_cards[i].window_start)
+		assert(is_equal_approx(route_1.departure_hours[i], service_start + RoutePlan.DWELL_HOURS), "stop %d departure wrong" % i)
+	assert(route_1.arrival_hours[1] > route_1.departure_hours[0], "stops out of order")
+	assert(route_1.estimated_end_hour > route_1.departure_hours[1], "route should end after the last stop")
+
+	# Arriving before a window opens means waiting for it.
+	var early := w.make_route("RT_EARLY", 1, [w.collection])
+	w.collection.window_start = 9.0
+	early.recalculate_timeline()
+	assert(is_equal_approx(early.departure_hours[0], 9.0 + RoutePlan.DWELL_HOURS), "should wait for the 09:00 window")
+	w.collection.window_start = 6.0
 	var committed_1 := route_1.commit_route(w.depot.stored_cargo)
 	assert(committed_1, "route 1 failed to commit")
 
@@ -48,8 +47,3 @@ func _ready() -> void:
 	assert(w.truck.schedule.size() == 2, "truck should have 2 bookings")
 	assert(not w.job.is_complete(), "job finished too early")
 	print_rich("All checks passed")
-
-	depot_node.texture = w.depot.icon
-	truck_node.texture = w.truck.type.icon
-	pallet_node.texture = w.milk_pallet.cargo_type.icon
-	milk_node.texture = w.milk_pallet.commodity.icon

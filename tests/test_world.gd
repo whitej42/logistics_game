@@ -52,5 +52,5 @@ func make_route(route_id: String, day: int, drops: Array[JobDrop]) -> RoutePlan:
 	var route := RoutePlan.create(route_id, day, depot.depot_id, driver, truck)
 	for drop in drops:
 		route.add_drop(drop)
-	route.recalculate_timeline(6.0)
+	route.recalculate_timeline()
 	return route

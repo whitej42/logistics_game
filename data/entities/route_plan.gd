@@ -9,17 +9,25 @@ extends Resource
 @export var assigned_vehicle: Vehicle
 
 @export var action_cards: Array[JobDrop] = []
+@export var start_hour: float = 6.0
 
-var estimated_start_hour: float= 0.0
-var estimated_end_hour: float= 0.0
+const DWELL_HOURS := 0.25 # time spent loading/unloading at each stop
 
-static func create(p_id: String, p_day: int, p_depot_id: String, p_driver: Driver, p_vehicle: Vehicle) -> RoutePlan:
+var estimated_start_hour: float = 0.0
+var estimated_end_hour: float = 0.0
+
+# Timetable, one entry per action card (same index).
+var arrival_hours: Array[float] = []
+var departure_hours: Array[float] = []
+
+static func create(p_id: String, p_day: int, p_depot_id: String, p_driver: Driver, p_vehicle: Vehicle, p_start_hour: float = 6.0) -> RoutePlan:
 	var r := RoutePlan.new()
 	r.route_id = p_id
 	r.day = p_day
 	r.depot_id = p_depot_id
 	r.assigned_driver = p_driver
 	r.assigned_vehicle = p_vehicle
+	r.start_hour = p_start_hour
 	return r
 
 func add_drop(drop: JobDrop) -> bool:
@@ -65,6 +73,8 @@ func validate_sequence(depot_stock: Array[CargoItem] = []) -> Array[String]:
 
 	for i in range(action_cards.size()):
 		var card := action_cards[i]
+		if card.day != day:
+			errors.append("Row #%d: '%s' is due on day %d, route runs on day %d" % [i + 1, card.drop_id, card.day, day])
 		for item in card.cargo_manifest:
 			match card.type:
 				JobDrop.DropType.COLLECTION:
@@ -101,35 +111,43 @@ func get_start_load(depot_stock: Array[CargoItem] = []) -> Array[CargoItem]:
 				start_load.append(item)
 	return start_load
 
-## Calculates full loop timeline: Depot -> Action Cards -> Depot Return
-func recalculate_timeline(start_hour: float, location_graph: Dictionary = {}) -> void:
+## Calculates full loop timeline: Depot -> Action Cards -> Depot Return,
+## recording an arrival and departure hour for every card.
+func recalculate_timeline(location_graph: Dictionary = {}) -> void:
+	arrival_hours.clear()
+	departure_hours.clear()
 	estimated_start_hour = start_hour
 	var current_time: float = start_hour
 	var current_loc: String = depot_id
-	
-	# 1. Process all action cards (Pickups & Deliveries)
+
+	# 1. Process all action cards (Collections & Deliveries)
 	for card in action_cards:
-		var target_loc = card.location_id
-		if target_loc != current_loc:
-			current_time += _get_travel_time(current_loc, target_loc, location_graph)
-			current_loc = target_loc
-		current_time += 0.25 # 15 min dwell/loading time
-		
+		if card.location_id != current_loc:
+			current_time += get_travel_time(current_loc, card.location_id, location_graph)
+			current_loc = card.location_id
+		arrival_hours.append(current_time)
+		current_time = maxf(current_time, card.window_start) # arrived early: wait for the window to open
+		current_time += DWELL_HOURS
+		departure_hours.append(current_time)
+
 	# 2. IMPLICIT RETURN TO DEPOT: Always add final return leg home
 	if current_loc != depot_id:
-		current_time += _get_travel_time(current_loc, depot_id, location_graph)
+		current_time += get_travel_time(current_loc, depot_id, location_graph)
 		current_loc = depot_id
 		
 	estimated_end_hour = current_time
 
 
-func _get_travel_time(from_id: String, to_id: String, location_graph: Dictionary) -> float:
+func get_travel_time(from_id: String, to_id: String, location_graph: Dictionary = {}) -> float:
+	if from_id == to_id:
+		return 0.0
 	if location_graph.has(from_id) and location_graph[from_id].has(to_id):
 		return location_graph[from_id][to_id]
 	return 0.5 # Default 30 min travel fallback
 
 
 func commit_route(depot_stock: Array[CargoItem] = []) -> bool:
+	recalculate_timeline() # cards may have been added or reordered since the last calculation
 	var validation_errors = validate_sequence(depot_stock)
 	if not validation_errors.is_empty():
 		push_error("Cannot commit route %s: %s" % [route_id, validation_errors[0]])
