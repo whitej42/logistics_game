@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Depot" format=3 uid="uid://dqim3bqco5eev"]
+
+[ext_resource type="Script" uid="uid://cxguaiss13l3e" path="res://data/entities/vehicle.gd" id="1_8hwmf"]
+[ext_resource type="Texture2D" uid="uid://dee54dwynbly4" path="res://assets/icons/warehouse.png" id="2_6wbgi"]
+[ext_resource type="Script" uid="uid://dimglwwgqy1mt" path="res://data/entities/depot.gd" id="2_bvr8l"]
+[ext_resource type="Script" uid="uid://b2yhg2e841ciy" path="res://data/entities/cargo_item.gd" id="3_6wbgi"]
+
+[resource]
+script = ExtResource("2_bvr8l")
+icon = ExtResource("2_6wbgi")
+metadata/_custom_type_script = "uid://dimglwwgqy1mt"

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Commodity" format=3 uid="uid://k1t1ekco2e2s"]
+
+[ext_resource type="Script" uid="uid://d3kx0a0l3k7c6" path="res://data/blueprints/resources/commodities/commodity.gd" id="1_0tuto"]
+[ext_resource type="Texture2D" uid="uid://drqmrtjo5mlyw" path="res://assets/icons/commodity/milk.png" id="1_pea2u"]
+
+[resource]
+script = ExtResource("1_0tuto")
+icon = ExtResource("1_pea2u")
+metadata/_custom_type_script = "uid://d3kx0a0l3k7c6"

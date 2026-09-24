@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="VehicleType" format=3 uid="uid://bufunguslyjns"]
+
+[ext_resource type="Script" uid="uid://b7eef4kajhea6" path="res://data/blueprints/resources/vehicle_types/vehicle_type.gd" id="1_llpg5"]
+[ext_resource type="Texture2D" uid="uid://bm5cqilmjger7" path="res://assets/icons/vehicle/truck.png" id="1_xhq4b"]
+
+[resource]
+script = ExtResource("1_llpg5")
+icon = ExtResource("1_xhq4b")
+metadata/_custom_type_script = "uid://b7eef4kajhea6"

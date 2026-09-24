@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CargoType" format=3 uid="uid://66qknssdvpe"]
+
+[ext_resource type="Script" uid="uid://dgu75kbj5ddxd" path="res://data/blueprints/resources/cargo_types/cargo_type.gd" id="1_npt55"]
+[ext_resource type="Texture2D" uid="uid://byxm7h7dtufo7" path="res://assets/icons/cargo/pallet.png" id="1_o62g7"]
+
+[resource]
+script = ExtResource("1_npt55")
+icon = ExtResource("1_o62g7")
+metadata/_custom_type_script = "uid://dgu75kbj5ddxd"

@@ -1,6 +1,47 @@
 [gd_scene format=3 uid="uid://bxuo8pnrx6ktw"]
 
-[ext_resource type="Script" uid="uid://bqko2n3d0x5gl" path="res://test_scene.gd" id="1_uhqqe"]
+[ext_resource type="Script" uid="uid://bqko2n3d0x5gl" path="res://tests/test_scene.gd" id="1_uhqqe"]
+[ext_resource type="Texture2D" uid="uid://dee54dwynbly4" path="res://assets/icons/warehouse.png" id="2_oikp8"]
+[ext_resource type="Texture2D" uid="uid://bm5cqilmjger7" path="res://assets/icons/vehicle/truck.png" id="3_evjb6"]
+[ext_resource type="Texture2D" uid="uid://byxm7h7dtufo7" path="res://assets/icons/cargo/pallet.png" id="4_yit6w"]
+[ext_resource type="Texture2D" uid="uid://drqmrtjo5mlyw" path="res://assets/icons/commodity/milk.png" id="5_2rgn6"]
 
 [node name="TestScene" type="Node2D" unique_id=1865597337]
+position = Vector2(1, -1)
 script = ExtResource("1_uhqqe")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1556912239]
+
+[node name="Collection" type="ColorRect" parent="." unique_id=818089747]
+offset_left = -297.0
+offset_top = 110.0
+offset_right = -257.0
+offset_bottom = 150.0
+color = Color(0, 1, 0.20000005, 1)
+
+[node name="Delivery" type="ColorRect" parent="." unique_id=491934725]
+offset_left = -226.0
+offset_top = -131.0
+offset_right = -186.0
+offset_bottom = -91.0
+color = Color(0, 0.1500001, 1, 1)
+
+[node name="DepotSprite" type="Sprite2D" parent="." unique_id=602130888]
+position = Vector2(220.5, -116)
+scale = Vector2(0.31490386, 0.35403726)
+texture = ExtResource("2_oikp8")
+
+[node name="TruckSprite" type="Sprite2D" parent="." unique_id=1918164781]
+position = Vector2(248, 104)
+scale = Vector2(0.67753625, 0.65957445)
+texture = ExtResource("3_evjb6")
+
+[node name="PalletSprite" type="Sprite2D" parent="." unique_id=804431729]
+position = Vector2(136, -83.00001)
+scale = Vector2(0.33552632, 0.3806306)
+texture = ExtResource("4_yit6w")
+
+[node name="MilkSprite" type="Sprite2D" parent="PalletSprite" unique_id=953285363]
+position = Vector2(1.859665e-05, -36.781055)
+scale = Vector2(0.28288975, 0.23204473)
+texture = ExtResource("5_2rgn6")
